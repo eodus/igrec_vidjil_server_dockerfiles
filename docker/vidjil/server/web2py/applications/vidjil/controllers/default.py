@@ -38,7 +38,7 @@ def home():
     if auth.is_admin():
         redirect = URL('admin', 'index', scheme=True, host=True)
     else:
-        redirect = URL('sample_set', 'all', vars={'type': defs.SET_TYPE_PATIENT, 'page': 0}, scheme=True, host=True)
+        redirect = URL('sample_set', 'all', vars={'type': defs.SET_TYPE_PATIENT}, scheme=True, host=True)
     res = {"redirect" : redirect}
     return gluon.contrib.simplejson.dumps(res, separators=(',',':'))
 
@@ -82,8 +82,8 @@ def init_db_form():
 
 def init_db_helper(force=False, admin_email="plop@plop.com", admin_password="1234"):
     if (force) or (db(db.auth_user.id > 0).count() == 0) : 
-        for table in db :
-            table.truncate()
+        #for table in db :
+            #table.truncate()
         
         id_first_user=""
 
@@ -152,16 +152,16 @@ def init_db_helper(force=False, admin_email="plop@plop.com", admin_password="123
             info = 'IGH, Vh(Dh)Jh'
         )
         db.config.insert(
-            name = 'IgReC-all',
+            name = 'IgReC all',
             program = 'igrec',
-            command = '--loci=all --threads=1 --organism=human',
+            command = '--loci=all --threads=1 --organism=human ',
             fuse_command = '-t 100',
             info = 'all (IG + TCR)'
         )
         db.config.insert(
-            name = 'IgReC-IG',
+            name = 'IgReC IG',
             program = 'igrec',
-            command = '--loci=IG --threads=1 --organism=human',
+            command = '--loci=IG --threads=1 --organism=human ',
             fuse_command = '-t 100',
             info = 'IG'
         )
@@ -360,7 +360,7 @@ def get_data():
                 data["info"] = db.generic[row.id].info
                 data["generic_id"] = row.id
                 data["sample_name"] = generic_name
-                data["group_id"] = get_set_group(row.sample_set_id)
+                data["group_id"] = get_set_group(defs.SET_TYPE_GENERIC, row.id)
 
         if (sample_set.sample_type == defs.SET_TYPE_PATIENT):
             for row in db( db.patient.sample_set_id == request.vars["sample_set_id"] ).select() :
@@ -370,7 +370,7 @@ def get_data():
                 data["info"] = db.patient[row.id].info
                 data["patient_id"] = row.id
                 data["sample_name"] = patient_name
-                data["group_id"] = get_set_group(row.sample_set_id)
+                data["group_id"] = get_set_group(defs.SET_TYPE_PATIENT, row.id)
 
         if (sample_set.sample_type == defs.SET_TYPE_RUN) :
             for row in db( db.run.sample_set_id == request.vars["sample_set_id"] ).select() :
@@ -380,7 +380,7 @@ def get_data():
                 data["info"] = db.run[row.id].info
                 data["run_id"] = row.id
                 data["sample_name"] = run_name
-                data["group_id"] = get_set_group(row.sample_set_id)
+                data["group_id"] = get_set_group(defs.SET_TYPE_RUN, row.id)
 
         log_query = db(  ( db.user_log.record_id == log_reference_id )
                        & ( db.user_log.table_name == sample_set.sample_type )
@@ -687,17 +687,10 @@ def user():
         auth.is_logged_in = lambda: False
         
         def post_register(form):
-            # Set up a new user, after register
-
-            # Default permissions
+            #default values for new user
+            group_id = db(db.auth_group.role == 'public' ).select()[0].id
             add_default_group_permissions(auth, auth.user_group())
-
-            # Appartenance to the public group
-            group_id = db(db.auth_group.role == 'public').select()[0].id
             db.auth_membership.insert(user_id = auth.user.id, group_id = group_id)
-
-            log.admin('User %s <%s> registered, group %s' % (auth.user.id, auth.user.email, auth.user_group()))
-
             #restore admin session after register
             session.auth = admin_auth
             auth.user = session.auth.user

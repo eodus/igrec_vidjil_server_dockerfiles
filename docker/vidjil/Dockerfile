@@ -81,9 +81,9 @@ copy ./pydal/ /usr/share/vidjil/server/web2py/gluon/packages/dal/
 
 # Copy updated versions of server files
 copy ./server/web2py/applications/vidjil/models/task.py /usr/share/vidjil/server/web2py/applications/vidjil/models/task.py
-copy ./server/web2py/applications/vidjil/controllers/default.py /usr/share/vidjil/server/web2py/applications/vidjil/controllers/default.py
 copy ./server/web2py/applications/vidjil/views/config/add.html /usr/share/vidjil/server/web2py/applications/vidjil/views/config/add.html
 copy ./server/web2py/applications/vidjil/views/config/edit.html /usr/share/vidjil/server/web2py/applications/vidjil/views/config/edit.html
+copy ./server/web2py/applications/vidjil/controllers/default.py /usr/share/vidjil/server/web2py/applications/vidjil/controllers/default.py
 
 # Copy conf
 copy ./conf/nginx_web2py /etc/nginx/sites-enabled/web2py
