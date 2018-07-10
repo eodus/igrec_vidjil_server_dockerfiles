@@ -54,11 +54,14 @@ Access admin interface and create other users if necessary. Check their permissi
 
 ## Usage example
 1. Create new run `runs -> + new run`.
+![Creating a new run](figures/create_new_run.png)
 2. Click on the created run and then `+ add sample`.
 3. Select `my computer`, then `choose file` and upload a file with merged Rep-Seq reads. Press `Submit`.
 4. Select the config ('IgReC all' for all immune receptors, IgReC Ig for BCRs) and press `run`.
+![Config selection](figures/config_selection.png)
 5. Wait a time.
 6. Inspect the result.
+![Resultant repertoire](figures/resultant_repertoire.png)
 
 
 For additional vidjil-server options consult the manual on http://www.vidjil.org/.
