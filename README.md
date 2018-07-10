@@ -54,7 +54,7 @@ Access admin interface and create other users if necessary. Check their permissi
 
 ## Usage example
 1. Create new run `runs -> + new run`.
-![Creating a new run](figures/create_new_run.png)
+<!-- ![Creating a new run](figures/create_new_run.png) -->
 2. Click on the created run and then `+ add sample`.
 3. Select `my computer`, then `choose file` and upload a file with merged Rep-Seq reads. Press `Submit`.
 4. Select the config ('IgReC all' for all immune receptors, IgReC Ig for BCRs) and press `run`.
@@ -62,6 +62,9 @@ Access admin interface and create other users if necessary. Check their permissi
 5. Wait a time.
 6. Inspect the result.
 ![Resultant repertoire](figures/resultant_repertoire.png)
+Top left one can see reads statistics, bottom left there are antibody sequences (in amino acids) sorted by their population.
+On the right there are read lenght histogram and visual representation of the repertoire grouped by V-J genes pairs.
+In the considered repertoire the most common V-J combination is IGHV3-23/IGHJ4.
 
 
 For additional vidjil-server options consult the manual on http://www.vidjil.org/.
