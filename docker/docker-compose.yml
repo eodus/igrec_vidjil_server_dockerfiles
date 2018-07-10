@@ -1,0 +1,86 @@
+version: '2'
+services:
+    mysql:
+        image: mysql:5.7
+        environment:
+            - MYSQL_ROOT_PASSWORD=MySRPimSRP
+        volumes:
+            - ./mysql/:/docker-entrypoint-initdb.d/
+            - ./vidjil_opt/vidjil/mysql:/var/lib/mysql
+    postfix:
+        image: catatnight/postfix
+        environment:
+            - maildomain=mail.example.com
+            - smtp_user=user:pwd
+        ports:
+                - "2525:25"
+    uwsgi:
+        build: ./vidjil
+        image: vidjil:test
+        command: bash /entrypoints/uwsgi-entrypoint.sh
+        volumes_from:
+            - fuse
+        depends_on:
+            - mysql
+            - postfix
+            - fuse
+        links:
+            - mysql:mysql
+            - postfix:postfix
+            - fuse:fuse
+    fuse:
+        image: vidjil:test
+        command: bash /entrypoints/fuse-entrypoint.sh
+        volumes:
+            - ./vidjil_opt/vidjil/databases:/usr/share/vidjil/server/web2py/applications/vidjil/databases
+            - ./vidjil_opt/vidjil/result/results:/mnt/result/results
+            - ./vidjil_opt/vidjil/result/tmp:/mnt/result/tmp
+            - ./vidjil_opt/vidjil/upload/uploads:/mnt/upload/uploads
+            - ./vidjil_opt/vidjil/log:/var/vidjil
+            - ./vidjil_opt/vidjil/log/nginx:/var/log/nginx
+            - ./vidjil_opt/vidjil/log/uwsgi:/var/log/uwsgi
+            - ./vidjil_opt/vidjil/backup:/mnt/backup
+            - ./vidjil/conf:/etc/vidjil
+    nginx:
+        image: vidjil:test
+        depends_on:
+            - uwsgi
+        links:
+            - uwsgi:uwsgi
+        ports:
+            - "3680:3680"
+            - "36443:36443"
+        #command: bash /entrypoints/nginx-entrypoint.sh
+        command: bash -c "spawn-fcgi -u www-data -s /var/run/fcgiwrap.socket /usr/sbin/fcgiwrap ; nginx -g 'daemon off;'"
+        volumes_from:
+            - uwsgi
+
+    workers:
+        image: vidjil:test
+        command: /usr/local/bin/gosu www-data python /usr/share/vidjil/server/web2py/web2py.py -K vidjil,vidjil,vidjil
+        volumes_from:
+            - uwsgi
+        depends_on:
+            - uwsgi
+            - mysql
+        links:
+            - mysql
+    backup:
+        image: vidjil:test
+        command: bash -c "echo '0 5 * * * cd /usr/share/vidjil/server; sh backup.sh /mnt/backup 2>1&' > /etc/cron.d/backup-cron && cron"
+        volumes_from:
+            - uwsgi
+        links:
+            - mysql
+    reporter:
+        build: ./reporter
+        image: reporter:test
+        volumes_from:
+            - uwsgi
+        volumes:
+            - ./reporter/code:/opt/reporter
+        depends_on:
+            - uwsgi
+        links:
+            - postfix:postfix
+            - uwsgi:uwsgi
