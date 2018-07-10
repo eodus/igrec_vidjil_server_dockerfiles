@@ -6,7 +6,7 @@ The latest version of IgReC supports vidjil output format https://gitlab.inria.f
 therefore, it is possible to run the IgReC algorithm on the vidjil-server web platform http://www.vidjil.org/.
 
 Unfortunately, for this moment (10 July 2018) the official vidjil-server instance does
-not provide IgReC running for public users due to their highly limited resources.
+not provide IgReC running for public users due to highly limited resources.
 
 However, you can deploy your own vidjil server instance with IgReC support using the manual below.
 
@@ -72,5 +72,5 @@ Your server could block connections to your ports. If you have ssh access, you c
 ssh -C -q -N -o ServerAliveInterval=60 YOUR_SERVER -L 36443:localhost:36443 -L 3680:localhost:3680
 ```
 And connect to https://localhost:36443 on your local machine.
-In this case you should not change the server hostname in `vidjil/conf/conf.js` let it be `localhost`.
+In this case you should not change the server hostname in `vidjil/conf/conf.js, let it be `localhost`.
 Be careful, ssh port forwarding may be disabled as well, consult the server administrator.
