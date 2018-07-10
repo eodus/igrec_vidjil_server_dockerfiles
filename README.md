@@ -52,8 +52,16 @@ Access admin interface and create other users if necessary. Check their permissi
 
 8. To stop running service press <CTRL+C>
 
-## Platform usage
-Consult the manual on http://www.vidjil.org/. 
+## Usage example
+1. Create new run `runs -> + new run`.
+2. Click on the created run and then `+ add sample`.
+3. Select `my computer`, then `choose file` and upload a file with merged Rep-Seq reads. Press `Submit`.
+4. Select the config ('IgReC all' for all immune receptors, IgReC Ig for BCRs) and press `run`.
+5. Wait a time.
+6. Inspect the result.
+
+
+For additional vidjil-server options consult the manual on http://www.vidjil.org/.
 
 ## Demonizing
 You can run the service in detached (demonized) mode and close the terminal leaving working service
